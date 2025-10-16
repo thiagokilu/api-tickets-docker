@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: api-tickets
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    branch: main
+    envVars:
+      - key: NODE_ENV
+        value: production
+
