@@ -152,7 +152,7 @@ router.get("/:id", async (req, res) => {
  */
 router.post("/", async (req, res) => {
   try {
-    const { title, priority, user_name } = req.body;
+    const { data, title, priority, status, feedbacks } = req.body;
 
     if (!title || !priority) {
       return res
@@ -161,10 +161,16 @@ router.post("/", async (req, res) => {
     }
 
     const result = await pool.query(
-      `INSERT INTO tickets (title, priority, user_name)
-       VALUES ($1, $2, $3)
+      `INSERT INTO tickets (data, title, priority, status, feedbacks)
+       VALUES ($1, $2, $3, $4, $5::jsonb)
        RETURNING *`,
-      [title, priority, user_name]
+      [
+        data || new Date(),
+        title,
+        priority,
+        status || "Recebido",
+        JSON.stringify(feedbacks || []),
+      ]
     );
 
     res.status(201).json(result.rows[0]);
